@@ -18,79 +18,48 @@ Class {
 LlNoteSnippetElement >> initialize [ 
 	super initialize.
 
-	self initializeEditor.
-	self initializePictureContainer.
-
-	self initializeSceneResizer.
+	self initializeInputFieldsElement.
+	self initializeToolbarElement.
 	
+	self addChild: self inputFieldsElement as: #inputFields.
+	self addChild: self toolbarElement as: #toolbar.
+
 	self when: BlClickEvent do: [ :anEvent |
 		anEvent consumed: true.
 		anEvent currentTarget requestFocus ]
 ]
 
 { #category : #initialization }
-LlNoteSnippetElement >> initializeEditor [
-	| okButton fileStencil fileSelector |
+LlNoteSnippetElement >> initializeInputFieldsElement [
+]
 
-	snippetToolbar := BrHorizontalPane new
-		hMatchParent;
-		padding: (BlInsets top: 4 bottom: 4);
-		alignCenterLeft;
-		cellSpacing: 5;
-		vFitContent.
-
-	editorElement := BrEditor new
-		look: BrGlamorousRegularEditorLook new glamorousRegularSmallSize + BrGlamorousInputFieldSpacingLook new;
+{ #category : #accessing }
+LlNoteSnippetElement >> newInputNamed: aName onModificationDo: aModificationBlock [
+	| aLabel anEditor |
+	aLabel := BrLabel new
+		look: (BrGlamorousLabelLook new foreground: Color gray);
+		text: aName;
+		margin: (BlInsets top: 0 right: 0 bottom: 5 left: 0);
+		constraintsDo: [ :c | c grid horizontal alignLeft ];
+		fitContent.
+	self inputFieldsElement addChild: aLabel.
+	
+	anEditor := BrEditor new
+		id: (LeGitHubInputFieldId new name: aName);
+		look: BrGlamorousEditorLook + BrGlamorousInputFieldSpacingLook;
+		inputFilter: BrTextEditorNoSpaceInputFilter new;
+		margin: (BlInsets top: 0 right: 0 bottom: 5 left: 5);
+		constraintsDo: [ :c | c grid horizontal alignLeft ];
 		vFitContent;
-		hFitContentLimited;
-		constraintsDo: [ :c | c minWidth: 100 ].
-
-	editorElement editor
+		hMatchParent.
+	
+	"anEditor editor
 		when: BrTextEditorModifiedEvent
-		do: [ :anEvent | self onURLModifiedEvent: anEvent ].
-
-	fileStencil := LePictureImportStencil new pictureElement: self.
-	fileSelector := fileStencil asElement.
-	fileSelector beSmallSize.
-
-	okButton := BrButton new
-		look: BrGlamorousButtonWithIconLook;
-		icon: BrGlamorousVectorIcons accept;
-		beSmallSize;
-		action: [ :aButton | self updatePicture ].
-
-	snippetToolbar
-		addChild: (BrLabel new
-			look: BrGlamorousLabelLook;
-			beSmallSize;
-			text: 'Source:');
-		addChild: editorElement;
-		addChild: fileSelector;
-		addChild: okButton
-]
-
-{ #category : #initialization }
-LlNoteSnippetElement >> initializePictureContainer [
-	pictureContainer := BlElement new
-		constraintsDo: [ :c | 
-			c horizontal matchParent.
-			c vertical fitContent ];
-		layout: BlLinearLayout vertical;
-		padding: (BlInsets top: 5 left: 7 bottom: 5 right: 5);
-		yourself
-]
-
-{ #category : #initialization }
-LlNoteSnippetElement >> initializeSceneResizer [
-	pictureContainer addLook: (BrGlamorousWithVerticalResizerLook new beBottom
-		resizerDo: [ :theResizer |
-			theResizer
-				when: BlResizerResizedEvent
-				do: [:anEvent |
-					pictureContainer
-						childWithId: #imageElement
-						ifFound: [ :anImageElement | (BrResizerElementLength exact: anEvent extent y) adjustHeightFor: anImageElement ]
-						ifNone: [ ] ] ])
+		do: aModificationBlock."
+		
+	self inputFieldsElement addChild: anEditor.
+	
+	^ anEditor.
 ]
 
 { #category : #'api - snippet view model' }

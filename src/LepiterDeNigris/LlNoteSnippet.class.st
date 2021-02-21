@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'urlString'
 	],
-	#category : #'LepiterDeNigris-Model'
+	#category : #LepiterDeNigris
 }
 
 { #category : #factory }
@@ -37,19 +37,6 @@ LlNoteSnippet >> acceptVisitor: aVisitor [
 LlNoteSnippet >> asContentUIModel [
 	<return: #LeContentViewModel>
 	^ LlNoteSnippetViewModel new snippet: self
-]
-
-{ #category : #accessing }
-LlNoteSnippet >> asIconSizedElement [
-	| uiModel elem image |
-	uiModel := self asContentUIModel.
-	elem:= uiModel snippetView asElement.
-	elem snippetViewModel: uiModel.
-	image := BlUrlImageElement new url:elem urlString.
-	image constraintsDo: [ :c |
-					c horizontal matchParent.
-					c vertical matchParent. ].
-	^ image
 ]
 
 { #category : #'api - accessing' }
