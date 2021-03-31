@@ -7,6 +7,15 @@ Class {
 	#category : #LepiterDeNigris
 }
 
+{ #category : #accessing }
+LlNoteSnippet class >> contextMenuItemSpefication [
+	<leSnippetSpecification>
+	^ LeContextMenuItemSpecification new
+		priority: 1000;
+		snippetClass: self;
+		title: 'Note'
+]
+
 { #category : #factory }
 LlNoteSnippet class >> empty [ 
 
