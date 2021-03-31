@@ -1,7 +1,7 @@
-Extension { #name : #LeSnippetLook }
+Extension { #name : #LeSnippetAptitude }
 
 { #category : #'*LepiterDeNigris' }
-LeSnippetLook >> llNoteSnippetMenuItem [
+LeSnippetAptitude >> llNoteSnippetMenuItem [
 	<leSnippetTypeMenuItem>
 
 	^ { 'LL Note' . LlNoteSnippet }
